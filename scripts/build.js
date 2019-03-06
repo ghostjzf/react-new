@@ -7,17 +7,22 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const chalk = require("react-dev-utils/chalk");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 console.log(chalk.cyan("正在启动环境..."));
 
 module.exports = {
   mode: "production",
+  devtool: "source-map",
   entry: {
     vendor: ["react", "react-dom"],
     path: path.resolve(__dirname, "../src/index.js")
   },
   output: {
     filename: "static/js/[name].[hash:8].js",
+    chunkFilename: "static/js/[name].[hash:8].js",
     path: path.resolve(__dirname, "../dist")
   },
   module: {
@@ -30,16 +35,24 @@ module.exports = {
       {
         test: /\.css$/,
         exclude: /\.module\.css$/,
-        use: ["style-loader", "css-loader"]
+        use: [MiniCssExtractPlugin.loader, "css-loader"]
       },
       {
         test: /\.s[ac]ss$/,
         exclude: /\.module\.s[ac]ss$/,
-        use: ["style-loader", "css-loader", "sass-loader"]
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"]
       }
     ]
   },
   optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true // set to true if you want JS source maps
+      }),
+      new OptimizeCSSAssetsPlugin({})
+    ],
     splitChunks: {
       chunks: "async",
       minSize: 30000,
@@ -53,6 +66,12 @@ module.exports = {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
           priority: -10
+        },
+        styles: {
+          name: "styles",
+          test: /\.css$/,
+          chunks: "all",
+          enforce: true
         },
         default: {
           minChunks: 2,
@@ -75,6 +94,12 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: "static/css/[name].[hash].css",
+      chunkFilename: "static/css/[id].[hash].css"
+    }),
     new HtmlWebpackPlugin({
       title: "Hello React",
       template: path.resolve(__dirname, "../public/index.html")
