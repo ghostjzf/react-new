@@ -7,14 +7,18 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const chalk = require("react-dev-utils/chalk");
 const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 console.log(chalk.cyan("正在启动环境..."));
 
 module.exports = {
-  mode: "development",
-  entry: path.resolve(__dirname, "../src/index.js"),
+  mode: "production",
+  entry: {
+    vendor: ["react", "react-dom"],
+    path: path.resolve(__dirname, "../src/index.js")
+  },
   output: {
-    filename: "[name].bundle.js",
+    filename: "static/js/[name].[hash:8].js",
     path: path.resolve(__dirname, "../dist")
   },
   module: {
@@ -36,12 +40,28 @@ module.exports = {
       }
     ]
   },
-  devServer: {
-    contentBase: path.join(__dirname, "dist"),
-    compress: true,
-    port: 9000,
-    quiet: true,
-    overlay: true // 编译出现错误时，将错误直接显示在页面上
+  optimization: {
+    splitChunks: {
+      chunks: "async",
+      minSize: 30000,
+      maxSize: 0,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: "~",
+      name: true,
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        }
+      }
+    }
   },
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
@@ -55,6 +75,7 @@ module.exports = {
     child_process: "empty"
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       title: "Hello React",
       template: path.resolve(__dirname, "../public/index.html")

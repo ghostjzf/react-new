@@ -14,7 +14,7 @@ module.exports = {
   mode: "development",
   entry: path.resolve(__dirname, "../src/index.js"),
   output: {
-    filename: "[name].bundle.js",
+    filename: "static/js/[name].[hash:8].js",
     path: path.resolve(__dirname, "../dist")
   },
   module: {
