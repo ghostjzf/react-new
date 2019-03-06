@@ -15,7 +15,8 @@ module.exports = {
   devtool: "inline-source-map",
   entry: path.resolve(__dirname, "../src/index.js"),
   output: {
-    filename: "static/js/[name].[hash:8].js",
+    filename: "static/js/[name].[contenthash].js",
+    chunkFilename: "static/js/[name].[contenthash].js",
     path: path.resolve(__dirname, "../dist")
   },
   module: {

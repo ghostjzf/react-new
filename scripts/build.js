@@ -11,7 +11,7 @@ const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
-console.log(chalk.cyan("正在启动环境..."));
+console.log(chalk.cyan("正在打包..."));
 
 module.exports = {
   mode: "production",
@@ -21,8 +21,8 @@ module.exports = {
     path: path.resolve(__dirname, "../src/index.js")
   },
   output: {
-    filename: "static/js/[name].[hash:8].js",
-    chunkFilename: "static/js/[name].[hash:8].js",
+    filename: "static/js/[name].[contenthash].js",
+    chunkFilename: "static/js/[name].[contenthash].js",
     path: path.resolve(__dirname, "../dist")
   },
   module: {
@@ -79,7 +79,8 @@ module.exports = {
           reuseExistingChunk: true
         }
       }
-    }
+    },
+    runtimeChunk: "single"
   },
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
@@ -103,6 +104,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: "Hello React",
       template: path.resolve(__dirname, "../public/index.html")
-    })
+    }),
+    new webpack.HashedModuleIdsPlugin()
   ]
 };
