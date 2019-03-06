@@ -6,7 +6,6 @@ const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const chalk = require("react-dev-utils/chalk");
-const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 console.log(chalk.cyan("正在启动环境..."));
@@ -79,16 +78,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: "Hello React",
       template: path.resolve(__dirname, "../public/index.html")
-    }),
-    new FriendlyErrorsWebpackPlugin({
-      compilationSuccessInfo: {
-        messages: [
-          `Local: ${0 ? "https" : "http"}://localhost:3000`,
-          `On Your Network: ${0 ? "https" : "http"}://localhost:3000`
-        ]
-      },
-      onErrors: null,
-      clearConsole: true
     })
   ]
 };

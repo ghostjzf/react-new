@@ -57,6 +57,7 @@ module.exports = {
   },
   devServer: {
     contentBase: path.join(__dirname, "dist"),
+    hot: true,
     compress: true,
     port: 9000,
     quiet: true,
@@ -87,6 +88,7 @@ module.exports = {
       },
       onErrors: null,
       clearConsole: true
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin()
   ]
 };
