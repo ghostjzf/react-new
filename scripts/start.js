@@ -15,8 +15,8 @@ module.exports = {
   devtool: "inline-source-map",
   entry: path.resolve(__dirname, "../src/index.js"),
   output: {
-    filename: "static/js/[name].[contenthash].js",
-    chunkFilename: "static/js/[name].[contenthash].js",
+    filename: "static/js/[name].[hash:8].js",
+    chunkFilename: "static/js/[name].[hash:8].js",
     path: path.resolve(__dirname, "../dist")
   },
   module: {
@@ -54,6 +54,28 @@ module.exports = {
         test: /\.s[ac]ss$/,
         exclude: /\.module\.s[ac]ss$/,
         use: ["style-loader", "css-loader", "sass-loader"]
+      },
+      {
+        test: /\.(txt|htm)$/,
+        loader: "raw-loader"
+      },
+      {
+        test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+        loader: "file-loader",
+        options: {
+          name: "static/images/[name].[hash:8].[ext]"
+        }
+      },
+      {
+        test: /\.(mp4|webm|wav|mp3|m4a|aac|oga)$/,
+        loader: "file-loader",
+        options: {
+          name: "static/media/[name].[hash:8].[ext]"
+        }
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: ["file-loader"]
       }
     ]
   },
