@@ -10,6 +10,7 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const { alias } = require("./config/path.js");
 
 console.log(chalk.cyan("正在打包..."));
 
@@ -29,12 +30,15 @@ module.exports = {
     rules: [
       {
         test: /\.(js|mjs|jsx|ts|tsx)$/,
-        exclude: /node_modules/,
+        include: path.resolve(__dirname, "../src"),
         use: "babel-loader"
       },
       {
         test: /\.css$/,
-        exclude: /\.module\.css$/,
+        include: [
+          path.resolve(__dirname, "../src"),
+          path.resolve(__dirname, "../node_modules/antd/es/")
+        ],
         use: [MiniCssExtractPlugin.loader, "css-loader"]
       },
       {
@@ -44,6 +48,7 @@ module.exports = {
       },
       {
         test: /\.(txt|htm)$/,
+        include: path.resolve(__dirname, "../src"),
         loader: "raw-loader"
       },
       {
@@ -65,6 +70,10 @@ module.exports = {
         use: ["file-loader"]
       }
     ]
+  },
+  resolve: {
+    alias: alias,
+    extensions: [".wasm", ".mjs", ".js", ".jsx", ".json"]
   },
   optimization: {
     minimizer: [

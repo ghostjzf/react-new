@@ -7,6 +7,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const chalk = require("react-dev-utils/chalk");
 const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
+const { alias } = require("./config/path.js");
 
 console.log(chalk.cyan("正在启动环境..."));
 
@@ -38,25 +39,29 @@ module.exports = {
             loader: require.resolve("eslint-loader")
           }
         ],
-        exclude: /node_modules/
+        include: path.resolve(__dirname, "../src")
       },
       {
         test: /\.(js|mjs|jsx|ts|tsx)$/,
-        exclude: /node_modules/,
+        include: path.resolve(__dirname, "../src"),
         use: "babel-loader"
       },
       {
         test: /\.css$/,
-        exclude: /\.module\.css$/,
+        include: [
+          path.resolve(__dirname, "../src"),
+          path.resolve(__dirname, "../node_modules/antd/es/")
+        ],
         use: ["style-loader", "css-loader"]
       },
       {
         test: /\.s[ac]ss$/,
-        exclude: /\.module\.s[ac]ss$/,
+        include: path.resolve(__dirname, "../src"),
         use: ["style-loader", "css-loader", "sass-loader"]
       },
       {
         test: /\.(txt|htm)$/,
+        include: path.resolve(__dirname, "../src"),
         loader: "raw-loader"
       },
       {
@@ -87,6 +92,10 @@ module.exports = {
     port: 9000,
     quiet: true,
     overlay: true // 编译出现错误时，将错误直接显示在页面上
+  },
+  resolve: {
+    alias: alias,
+    extensions: [".wasm", ".mjs", ".js", ".jsx", ".json"]
   },
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
