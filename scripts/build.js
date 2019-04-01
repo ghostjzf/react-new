@@ -18,7 +18,7 @@ module.exports = {
   mode: "production",
   devtool: "source-map",
   entry: {
-    vendor: ["react", "react-dom"],
+    vendor: ["react", "react-dom", "react-router-dom", "mobx", "mobx-react"],
     path: path.resolve(__dirname, "../src/index.js")
   },
   output: {
