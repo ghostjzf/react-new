@@ -10,7 +10,13 @@ function resolveApp(relativePath) {
 const alias = {
   components: resolveApp("src/components"),
   utils: resolveApp("src/utils"),
-  stores: resolveApp("src/stores")
+  stores: resolveApp("src/stores"),
+  public: resolveApp("public")
 };
 
-module.exports = { alias: alias };
+module.exports = {
+  alias: alias,
+  appSrc: resolveApp("src"),
+  appNodeModules: resolveApp("node_modules"),
+  appDist: resolveApp("dist")
+};

@@ -42,7 +42,7 @@ module.exports = {
         include: path.resolve(__dirname, "../src")
       },
       {
-        test: /\.(js|mjs|jsx|ts|tsx)$/,
+        test: /\.(js|mjs|jsx)$/,
         include: path.resolve(__dirname, "../src"),
         use: "babel-loader"
       },
