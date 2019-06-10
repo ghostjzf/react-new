@@ -13,7 +13,7 @@ console.log(chalk.cyan("正在启动环境..."));
 
 module.exports = {
   mode: "development",
-  devtool: "cheap-module-eval-source-map",
+  devtool: "eval-source-map",
   entry: path.resolve(__dirname, "../src/index.js"),
   output: {
     filename: "static/js/[name].[hash:8].js",
