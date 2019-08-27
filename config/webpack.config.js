@@ -25,6 +25,7 @@ const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const eslint = require('eslint');
 
 const postcssNormalize = require('postcss-normalize');
@@ -529,9 +530,10 @@ module.exports = function(webpackEnv) {
             : undefined
         )
       ),
+      isEnvProduction && 
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
-      isEnvProduction &&
+      isEnvProduction && new ProgressBarPlugin(), // 编译进度插件
         shouldInlineRuntimeChunk &&
         new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime~.+[.]js/]),
       // Makes some environment variables available in index.html.
