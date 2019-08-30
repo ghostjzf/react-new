@@ -76,26 +76,30 @@ function prepareUrls(protocol, host, port) {
     };
 }
 
-function printInstructions(appName, urls, useYarn) {
+function printInstructions(appName, urls, useYarn, spinner) {
     console.log();
-    console.log(chalk.green("编译通过！"));
+    spinner.succeed(chalk.green("编译通过！"));
     console.log();
-    console.log(chalk.green("应用(" + appName + ")已启动:"));
+    spinner.succeed(chalk.green("应用(" + appName + ")已启动:")).stop();
     console.log();
 
     if (urls.lanUrlForTerminal) {
         console.log(
-            `  ${chalk.bold("本地:")}  ${chalk.cyan(urls.localUrlForTerminal)}`
+            `  ${chalk.bold(chalk.cyan("本地:"))}  ${chalk.cyan(
+                urls.localUrlForTerminal
+            )}`
         );
         console.log(
-            `  ${chalk.bold("远程:")}  ${chalk.cyan(urls.lanUrlForTerminal)}`
+            `  ${chalk.bold(chalk.cyan("远程:"))}  ${chalk.cyan(
+                urls.lanUrlForTerminal
+            )}`
         );
     } else {
         console.log(`  ${urls.localUrlForTerminal}`);
     }
 
     console.log();
-    console.log();
+    spinner.start().text = chalk.cyan("项目运行中...");
 }
 
 function createCompiler({
@@ -105,7 +109,8 @@ function createCompiler({
     urls,
     useYarn,
     useTypeScript,
-    webpack
+    webpack,
+    spinner
 }) {
     // "Compiler" is a low-level interface to Webpack.
     // It lets us listen to some events and provide our own custom messages.
@@ -128,6 +133,9 @@ function createCompiler({
         if (isInteractive) {
             clearConsole();
         }
+
+        spinner.stop();
+        clearConsole();
         console.log("Compiling...");
     });
 
@@ -215,7 +223,7 @@ function createCompiler({
             console.log(chalk.green("Compiled successfully!"));
         }
         if (isSuccessful && (isInteractive || isFirstCompile)) {
-            printInstructions(appName, urls, useYarn);
+            printInstructions(appName, urls, useYarn, spinner);
         }
         isFirstCompile = false;
 

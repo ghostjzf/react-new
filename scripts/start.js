@@ -16,6 +16,7 @@ require("../config/env");
 
 const fs = require("fs");
 const chalk = require("react-dev-utils/chalk");
+const ora = require("ora");
 const webpack = require("webpack");
 const WebpackDevServer = require("webpack-dev-server");
 const clearConsole = require("react-dev-utils/clearConsole");
@@ -57,7 +58,7 @@ if (process.env.HOST) {
     console.log(
         `Learn more here: ${chalk.yellow("https://bit.ly/CRA-advanced-config")}`
     );
-    console.log();
+    // console.log();
 }
 
 // We require that you explicitly set browsers and do not fall back to
@@ -85,6 +86,8 @@ checkBrowsers(paths.appPath, isInteractive)
             errors: errors =>
                 devServer.sockWrite(devServer.sockets, "errors", errors)
         };
+
+        const spinner = ora(chalk.cyan("正在启动开发服务...")).start();
         // Create a webpack compiler that is configured with custom messages.
         const compiler = createCompiler({
             appName,
@@ -93,7 +96,8 @@ checkBrowsers(paths.appPath, isInteractive)
             urls,
             useYarn,
             useTypeScript,
-            webpack
+            webpack,
+            spinner
         });
         // Load proxy config
         const proxySetting = require(paths.appPackageJson).proxy;
@@ -125,7 +129,7 @@ checkBrowsers(paths.appPath, isInteractive)
                 console.log();
             }
 
-            console.log(chalk.cyan("Starting the development server...\n"));
+            // console.log(chalk.cyan("正在启动开发服务...\n"));
             openBrowser(urls.localUrlForBrowser);
         });
 
