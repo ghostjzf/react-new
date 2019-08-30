@@ -26,6 +26,9 @@ const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+const HappyPack = require('happypack');
+const os = require('os');
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 const eslint = require('eslint');
 
 const postcssNormalize = require('postcss-normalize');
@@ -364,32 +367,7 @@ module.exports = function(webpackEnv) {
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               include: paths.appSrc,
-              loader: require.resolve('babel-loader'),
-              options: {
-                customize: require.resolve(
-                  'babel-preset-react-app/webpack-overrides'
-                ),
-                
-                plugins: [
-                  [
-                    require.resolve('babel-plugin-named-asset-import'),
-                    {
-                      loaderMap: {
-                        svg: {
-                          ReactComponent:
-                            '@svgr/webpack?-svgo,+titleProp,+ref![path]',
-                        },
-                      },
-                    },
-                  ],
-                ],
-                // This is a feature of `babel-loader` for webpack (not Babel itself).
-                // It enables caching results in ./node_modules/.cache/babel-loader/
-                // directory for faster rebuilds.
-                cacheDirectory: true,
-                cacheCompression: isEnvProduction,
-                compact: isEnvProduction,
-              },
+              loader: 'happypack/loader?id=happyBabel'
             },
             // Process any JS outside of the app with Babel.
             // Unlike the application JS, we only compile the standard ES features.
@@ -530,6 +508,43 @@ module.exports = function(webpackEnv) {
             : undefined
         )
       ),
+      new HappyPack({
+        //用id来标识 happypack处理那里类文件
+        id: 'happyBabel',
+        //如何处理  用法和loader 的配置一样
+        loaders: [{
+          loader: require.resolve('babel-loader'),
+          options: {
+            customize: require.resolve(
+              'babel-preset-react-app/webpack-overrides'
+            ),
+            
+            plugins: [
+              [
+                require.resolve('babel-plugin-named-asset-import'),
+                {
+                  loaderMap: {
+                    svg: {
+                      ReactComponent:
+                        '@svgr/webpack?-svgo,+titleProp,+ref![path]',
+                    },
+                  },
+                },
+              ],
+            ],
+            // This is a feature of `babel-loader` for webpack (not Babel itself).
+            // It enables caching results in ./node_modules/.cache/babel-loader/
+            // directory for faster rebuilds.
+            cacheDirectory: true,
+            cacheCompression: isEnvProduction,
+            compact: isEnvProduction,
+          }
+        }],
+        //共享进程池
+        threadPool: happyThreadPool,
+        //允许 HappyPack 输出日志
+        verbose: false,
+      }),
       isEnvProduction && 
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
